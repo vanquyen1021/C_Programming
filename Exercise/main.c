@@ -9,6 +9,7 @@ double GetDataFromFile(char *pFileName, int position, int line);
 void RemoveID(char *pFileName, int Id);
 int Total(char *pFileName);
 void Max(char *pFileName);
+void Min(char *pFileName);
 
 int main(int argc, char *argv[])
 {
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
     // AddNewStudent("file1.txt", 6.7, 6.2, 8.6);
     printf("Total: %d\n", Total("file1.txt"));
     Max("file1.txt");
+    Min("file1.txt");
     RemoveID("file1.txt", 3);
     // printf("Get Data: %0.2f\n",GetDataFromFile("file1.txt",3, 0));
 }
@@ -200,7 +202,7 @@ void Max(char *pFileName)
     int max_student = Total(pFileName);
     if (max_student<1)
     {
-
+        printf("There is no student in file");
     }
     else
     {
@@ -220,4 +222,38 @@ void Max(char *pFileName)
             }
         }
     }
+    fclose(LpFile);
+}
+
+void Min(char *pFileName)
+{
+    double min=10;
+    FILE *LpFile;
+    
+    LpFile=fopen(pFileName, "r");
+
+    int max_student = Total(pFileName);
+    if (max_student<1)
+    {
+        printf("There is no student in file");
+    }
+    else
+    {
+        for(int i = 2; i <= max_student+1; i++)
+        {
+            double current_avr = GetDataFromFile(pFileName, 5, i);
+            if(current_avr<min)
+            {
+                min=current_avr;
+            }
+        }
+        for (int i = 2; i <= max_student+1; i++)
+        {
+            if(GetDataFromFile(pFileName, 5, i)==min)
+            {
+                printf("Student with ID: %d has the lowest avearge score: %0.2f\n",(int)GetDataFromFile(pFileName, 1, i),min);
+            }
+        }
+    }
+    fclose(LpFile);
 }
