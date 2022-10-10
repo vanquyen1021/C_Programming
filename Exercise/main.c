@@ -7,6 +7,8 @@ void Create(char *pFileName);
 void AddNewStudent(char *pFileName, double x, double y, double z);
 double GetDataFromFile(char *pFileName, int position, int line);
 void RemoveID(char *pFileName, int Id);
+int Total(char *pFileName);
+void Max(char *pFileName);
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +22,8 @@ int main(int argc, char *argv[])
     // AddNewStudent("file1.txt", 8.5, 2.1, 9.6);
     // AddNewStudent("file1.txt", 4.3, 9.8, 7.2);
     // AddNewStudent("file1.txt", 6.7, 6.2, 8.6);
+    printf("Total: %d\n", Total("file1.txt"));
+    Max("file1.txt");
     RemoveID("file1.txt", 3);
     // printf("Get Data: %0.2f\n",GetDataFromFile("file1.txt",3, 0));
 }
@@ -64,11 +68,11 @@ void AddNewStudent(char *pFileName, double x, double y, double z)
     }
     else
     {
-        int max_line = (int) GetDataFromFile(pFileName, 1, 0);
+        int max_line = (int) Total(pFileName);
         int max = 0;
-        if (max_line>1)
+        if (max_line > 0)
         {
-            max = (int) GetDataFromFile(pFileName, 1, max_line);
+            max = (int) GetDataFromFile(pFileName, 1, max_line+1);
         }
         Avr = (x + y + z)/3;
 
@@ -123,7 +127,6 @@ double GetDataFromFile(char *pFileName, int position, int line)
         } 
         current_line++;
     } while(fgets(buffer, 50, LpFile));
-    return (current_line-2);
 }
 
 void RemoveID(char *pFileName, int Id)
@@ -169,5 +172,52 @@ void RemoveID(char *pFileName, int Id)
     else
     {
         printf("There is no student with ID: %d", Id);
+    }
+}
+
+int Total(char *pFileName)
+{
+    FILE *LpFile;
+
+    LpFile = fopen(pFileName, "r");
+
+    int current_line=0;
+    char buffer[50];
+    while(fgets(buffer, 50, LpFile))
+    {
+        current_line++;
+    } 
+    return (current_line-1);
+}
+
+void Max(char *pFileName)
+{
+    double max=0;
+    FILE *LpFile;
+    
+    LpFile=fopen(pFileName, "r");
+
+    int max_student = Total(pFileName);
+    if (max_student<1)
+    {
+
+    }
+    else
+    {
+        for(int i = 2; i <= max_student+1; i++)
+        {
+            double current_avr = GetDataFromFile(pFileName, 5, i);
+            if(current_avr>max)
+            {
+                max=current_avr;
+            }
+        }
+        for (int i = 2; i <= max_student+1; i++)
+        {
+            if(GetDataFromFile(pFileName, 5, i)==max)
+            {
+                printf("Student with ID: %d has the highest avearge score: %0.2f\n",(int)GetDataFromFile(pFileName, 1, i),max);
+            }
+        }
     }
 }
