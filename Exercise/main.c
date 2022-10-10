@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
 void Create(char *pFileName);
 void AddNewStudent(char *pFileName, double x, double y, double z);
 double GetDataFromFile(char *pFileName, int position, int line);
+void RemoveID(char *pFileName, int Id);
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +15,12 @@ int main(int argc, char *argv[])
     printf("%0.2f :\n", num);
 
     // Create("file1.txt");
-    AddNewStudent("file1.txt", 7.4, 5.4, 9.5);
+    // AddNewStudent("file1.txt", 8.6, 5.3, 4.5);
+    // AddNewStudent("file1.txt", 5.6, 4.6, 5.8);
+    // AddNewStudent("file1.txt", 8.5, 2.1, 9.6);
+    // AddNewStudent("file1.txt", 4.3, 9.8, 7.2);
+    // AddNewStudent("file1.txt", 6.7, 6.2, 8.6);
+    RemoveID("file1.txt", 3);
     // printf("Get Data: %0.2f\n",GetDataFromFile("file1.txt",3, 0));
 }
 
@@ -77,7 +85,6 @@ double GetDataFromFile(char *pFileName, int position, int line)
     FILE *LpFile;
 
     LpFile = fopen(pFileName, "r");
-    double a,b,c,d,e;
 
     char x[6], y[6], z[6], avr[6];
     int Id;
@@ -117,4 +124,50 @@ double GetDataFromFile(char *pFileName, int position, int line)
         current_line++;
     } while(fgets(buffer, 50, LpFile));
     return (current_line-2);
+}
+
+void RemoveID(char *pFileName, int Id)
+{
+    FILE *LpFile, *ptempFile;
+
+    LpFile = fopen(pFileName,"r");
+    char tempFileName[20];
+    strcpy(tempFileName,"temp_");
+    strcat(tempFileName,pFileName);
+    ptempFile= fopen(tempFileName, "w");
+
+    char buffer[50];
+
+    int current_line=1;
+    int position = 1;
+    bool CheckID=false;
+
+    while (fgets(buffer, 50, LpFile))
+    {
+        if ((int)GetDataFromFile(pFileName, position, current_line)==Id)
+        {
+            fputs("", ptempFile);
+            CheckID=true;
+        }
+        else
+        {
+            fputs(buffer, ptempFile);
+        }
+        current_line++;
+    } 
+
+    fclose(LpFile);
+    fclose(ptempFile);
+
+    remove(pFileName);
+    rename(tempFileName,pFileName);
+
+    if (CheckID==true)
+    {
+        printf("Student with ID: %d is removed", Id);
+    }
+    else
+    {
+        printf("There is no student with ID: %d", Id);
+    }
 }
