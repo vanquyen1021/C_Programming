@@ -10,6 +10,11 @@ void RemoveID(char *pFileName, int Id);
 int Total(char *pFileName);
 void Max(char *pFileName);
 void Min(char *pFileName);
+bool ERR_CheckInteger(char *number);
+bool ERR_CheckFormatFile(char *pFileName);
+int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id);
+
+
 
 int main(int argc, char *argv[])
 {
@@ -17,17 +22,25 @@ int main(int argc, char *argv[])
     double num = strtod("123.0", NULL);
     printf("%0.2f :\n", num);
 
-    // Create("file1.txt");
+    // Create("\file1.txt");
+    printf("ID: %d\n",ERR_CheckInteger("10.5"));
     // AddNewStudent("file1.txt", 8.6, 5.3, 4.5);
     // AddNewStudent("file1.txt", 5.6, 4.6, 5.8);
     // AddNewStudent("file1.txt", 8.5, 2.1, 9.6);
     // AddNewStudent("file1.txt", 4.3, 9.8, 7.2);
     // AddNewStudent("file1.txt", 6.7, 6.2, 8.6);
-    printf("Total: %d\n", Total("file1.txt"));
-    Max("file1.txt");
-    Min("file1.txt");
-    RemoveID("file1.txt", 3);
+    // printf("Total: %d\n", Total("file1.txt"));
+    // Max("file1.txt");
+    // Min("file1.txt");
+    // RemoveID("file1.txt", 3);
     // printf("Get Data: %0.2f\n",GetDataFromFile("file1.txt",3, 0));
+
+    char *ppFileName;
+    double x, y, z;
+    int Id;
+
+    int lbstatus = CalculateInput(&ppFileName, &x, &y, &z, &Id);
+    int b=1;
 }
 
 void Create(char *pFileName)
@@ -45,7 +58,7 @@ void Create(char *pFileName)
 
         if (LpFile == NULL)
         {
-            printf("Unable to create file \n");
+            printf("ERR: Name file is uncorrect. Unable to create file \n");
         }
         else
         {
@@ -257,3 +270,171 @@ void Min(char *pFileName)
     }
     fclose(LpFile);
 }
+
+void Instruction()
+{
+    printf("Usage:\n");
+    printf("1. program -create filename     : Create a new text file with a predefined format");
+    printf("2. program -add filename x y z  : Add a new student with x - Math score, y - Physics score, z - English score");
+    printf("3. program -remove filename N   : Remove the student with ID N from the filename.\n");
+    printf("4. program -max filename        : Get the ID of the students who has the highest average score and also display score.\n");
+    printf("5. program -min filename        : Get the ID of the students who has the lowest average score and also display score.\n ");
+    printf("6. program -total filename      : Display the total number of the students existing in the database file.\n");
+    printf("7. program -h                   : Display the instruction.\n");
+    printf("8. program -end                 : End program.\n");
+}
+
+int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
+{
+    // char strCmd[50];
+    char *strCmd;
+
+    printf("Typing your command:\t");
+    // fgets(strCmd, 50, stdin);
+    strCmd = "program -create abc.txt";
+
+    char splitInput[6][10];
+    char *ptempFile;
+    int number=0;
+    int j=0;
+
+    for(int i=0; i<=strlen(strCmd);i++)
+    {
+        if (number>5) return 0;
+        if ((strCmd[i] == ' ') || (strCmd[i] == '\n') || (strCmd[i] == '\0'))
+        {
+            splitInput[number][j]='\0';
+            if (strCmd[i] != '\n')
+            {
+                number++;
+                j=0;
+            }
+        }
+        else
+        {
+            splitInput[number][j]=strCmd[i];
+            j++;
+        }
+    }
+
+    if ((!strcmp(splitInput[0],"program")))
+    {
+        if ((!strcmp(splitInput[1],"-h"))&&number==2)
+        {
+            return 1;
+        }
+        else if ((!strcmp(splitInput[1],"-create"))&&number==3)
+        {
+            if (ERR_CheckFormatFile(splitInput[2])) 
+            {
+                *pFileName=splitInput[2];
+                return 2;
+            }
+            return 0;
+        }
+        else if ((!strcmp(splitInput[1],"-add"))&&number==6)
+        {
+            if (ERR_CheckFormatFile(splitInput[2])) 
+            {
+                *pFileName=splitInput[2];
+
+                if (ERR_CheckInteger(splitInput[3]) && ERR_CheckInteger(splitInput[4])&& ERR_CheckInteger(splitInput[5]))
+                {
+                    *x=strtod(splitInput[3], NULL);
+                    *y=strtod(splitInput[4], NULL);
+                    *z=strtod(splitInput[5], NULL);
+
+                    if((*x<0||*x>10)||(*y<0||*y>10)||(*z<0||*z<10))
+                    {
+                        printf("ERR: Wrong score\n");
+                        return 0;
+                    }
+                }
+                else
+                {
+                    printf("ERR: Wrong format score\n");
+                    return 0;
+                }
+                return 3;
+            }           
+            return 0;
+        }
+        else if ((!strcmp(splitInput[1],"-remove"))&&number==4)
+        {
+            if (ERR_CheckFormatFile(splitInput[2])) 
+            {
+                *pFileName=splitInput[2];
+
+                if (ERR_CheckInteger(splitInput[3]))
+                {
+                    *Id=strtod(splitInput[3], NULL);
+                }
+                else
+                {
+                    printf("ERR: ID is not an integer\n");
+                    return 0;
+                }
+                return 4;
+            }
+            return 4;
+        }
+        else if ((!strcmp(splitInput[1],"-max"))&&number==3)
+        {
+            if (ERR_CheckFormatFile(splitInput[2])) 
+            {
+                *pFileName=splitInput[2];
+                return 5;
+            }
+            return 0;
+        }
+        else if ((!strcmp(splitInput[1],"-min"))&&number==3)
+        {
+            if (ERR_CheckFormatFile(splitInput[2])) 
+            {
+                *pFileName=splitInput[2];
+                return 6;
+            }
+            return 0;
+        }
+        else if ((!strcmp(splitInput[1],"-total"))&&number==3)
+        {
+            if (ERR_CheckFormatFile(splitInput[2])) 
+            {
+                *pFileName=splitInput[2];
+                return 7;
+            }
+            return 0;
+        }
+        else if ((!strcmp(splitInput[1],"-end"))&&number==2)
+        {
+            return 8;
+        } 
+    }
+}
+
+bool ERR_CheckFormatFile(char *pFileName)
+{
+    char *strFormat;
+
+    strFormat=&pFileName[strlen(pFileName)-4];
+
+    if (strcmp(strFormat,".txt"))
+    {
+        printf("ERR: Wrong format file\n");
+        return false;
+    }
+    return true;
+}
+
+bool ERR_CheckInteger(char *number)
+{
+    printf("Number %d\n",strlen(number));
+    if ( number[0]<47 || number[0]>58 || number[strlen(number)-1]<47 || number[strlen(number)-1]>58 )
+    {
+        return false;
+    }
+    return true;
+}
+
+
+
