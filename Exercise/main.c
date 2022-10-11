@@ -15,13 +15,11 @@ bool ERR_CheckFormatFile(char *pFileName);
 int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id);
 void Instruction();
 
-
-
-int main(int argc, char *argv[])
+int main()
 {
     // char data[4]="9.8";
-    // double num = strtod("123.0", NULL);
-    // printf("%0.2f :\n", num);
+    //  double num = strtod("123.0", NULL);
+    //  printf("%0.2f :\n", num);
 
     // Create("\file1.txt");
     // printf("ID: %d\n",ERR_CheckInteger("10.5"));
@@ -44,43 +42,43 @@ int main(int argc, char *argv[])
     while (lbStatus)
     {
         int mode = CalculateInput(&pFileName, &x, &y, &z, &Id);
-//        if(mode==1) Instruction();
-//        else if (mode==2) Create(pFileName);
-//        else if (mode ==3) AddNewStudent(pFileName,x , y, z);
-//        else if (mode==4) RemoveID(pFileName,Id);
-//        else if (mode==5) Max(pFileName);
-//        else if (mode==6) Min(pFileName);
-//        else if (mode==7) Total(pFileName);
-//        else if (mode==8) lbStatus=false;
+    //    if(mode==1) Instruction();
+    //    else if (mode==2) Create(pFileName);
+    //    else if (mode ==3) AddNewStudent(pFileName,x , y, z);
+    //    else if (mode==4) RemoveID(pFileName,Id);
+    //    else if (mode==5) Max(pFileName);
+    //    else if (mode==6) Min(pFileName);
+    //    else if (mode==7) Total(pFileName);
+    //    else if (mode==8) lbStatus=false;
 
-         switch (mode)
+        switch (mode)
          {
-         case 1:
-             Instruction();
-             break;
-         case 2:
-             Create(pFileName);
-             break;
-         case 3:
-             AddNewStudent(pFileName,x , y, z);
-             break;
-         case 4:
-             RemoveID(pFileName,Id);
-             break;
-         case 5:
-             Max(pFileName);
-             break;
-         case 6:
-             Min(pFileName);
-             break;
-         case 7:
-             Total(pFileName);
-             break;
-         case 8:
-             lbStatus=false;
-             break;
-         default:
-             break;
+            case 1:
+                Instruction();
+                break;
+            case 2:
+                Create(pFileName);
+                break;
+            case 3:
+                AddNewStudent(pFileName, x , y, z);
+                break;
+            case 4:
+                RemoveID(pFileName,Id);
+                break;
+            case 5:
+                Max(pFileName);
+                break;
+            case 6:
+                Min(pFileName);
+                break;
+            case 7:
+                Total(pFileName);
+                break;
+            case 8:
+                lbStatus=false;
+                break;
+            default:
+                break;
          }
     }
 
@@ -329,8 +327,8 @@ void Instruction()
 
 int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
 {
-    // char strCmd[50];
-    char *strCmd;
+    char strCmd[50];
+    // char *strCmd;
 
     printf("Typing your command:\t");
     fgets(strCmd, 50, stdin);
@@ -383,9 +381,14 @@ int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
 
                 if (ERR_CheckInteger(splitInput[3]) && ERR_CheckInteger(splitInput[4])&& ERR_CheckInteger(splitInput[5]))
                 {
+                    // printf("x: %0.2f, y: %0.2f, z: %0.2f\n", splitInput[3], splitInput[4], splitInput[5]);
+                    printf("x: %s, y: %s, z: %s\n", splitInput[3], splitInput[4], splitInput[5]);
+
                     *x=strtod(splitInput[3], NULL);
                     *y=strtod(splitInput[4], NULL);
                     *z=strtod(splitInput[5], NULL);
+
+                    printf("x: %0.2f, y: %0.2f, z: %0.2f\n", x, y, z);
 
                     if((*x<0||*x>10)||(*y<0||*y>10)||(*z<0||*z<10))
                     {
@@ -419,7 +422,7 @@ int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
                 }
                 return 4;
             }
-            return 4;
+            return 0;
         }
         else if ((!strcmp(splitInput[1],"-max"))&&number==3)
         {
@@ -437,7 +440,7 @@ int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
                 *pFileName=splitInput[2];
                 return 6;
             }
-            return 0;
+			return 0;
         }
         else if ((!strcmp(splitInput[1],"-total"))&&number==3)
         {
@@ -451,7 +454,8 @@ int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
         else if ((!strcmp(splitInput[1],"-end"))&&number==2)
         {
             return 8;
-        } 
+        }
+        else return 0;
     }
     else return 0;
 }
@@ -472,7 +476,6 @@ bool ERR_CheckFormatFile(char *pFileName)
 
 bool ERR_CheckInteger(char *number)
 {
-    printf("Number %d\n",strlen(number));
     if ( number[0]<47 || number[0]>58 || number[strlen(number)-1]<47 || number[strlen(number)-1]>58 )
     {
         return false;
