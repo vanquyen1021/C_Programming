@@ -13,17 +13,18 @@ void Min(char *pFileName);
 bool ERR_CheckInteger(char *number);
 bool ERR_CheckFormatFile(char *pFileName);
 int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id);
+void Instruction();
 
 
 
 int main(int argc, char *argv[])
 {
-    char data[4]="9.8";
-    double num = strtod("123.0", NULL);
-    printf("%0.2f :\n", num);
+    // char data[4]="9.8";
+    // double num = strtod("123.0", NULL);
+    // printf("%0.2f :\n", num);
 
     // Create("\file1.txt");
-    printf("ID: %d\n",ERR_CheckInteger("10.5"));
+    // printf("ID: %d\n",ERR_CheckInteger("10.5"));
     // AddNewStudent("file1.txt", 8.6, 5.3, 4.5);
     // AddNewStudent("file1.txt", 5.6, 4.6, 5.8);
     // AddNewStudent("file1.txt", 8.5, 2.1, 9.6);
@@ -35,12 +36,54 @@ int main(int argc, char *argv[])
     // RemoveID("file1.txt", 3);
     // printf("Get Data: %0.2f\n",GetDataFromFile("file1.txt",3, 0));
 
-    char *ppFileName;
+    char *pFileName;
     double x, y, z;
     int Id;
 
-    int lbstatus = CalculateInput(&ppFileName, &x, &y, &z, &Id);
-    int b=1;
+    bool lbStatus = true;
+    while (lbStatus)
+    {
+        int mode = CalculateInput(&pFileName, &x, &y, &z, &Id);
+//        if(mode==1) Instruction();
+//        else if (mode==2) Create(pFileName);
+//        else if (mode ==3) AddNewStudent(pFileName,x , y, z);
+//        else if (mode==4) RemoveID(pFileName,Id);
+//        else if (mode==5) Max(pFileName);
+//        else if (mode==6) Min(pFileName);
+//        else if (mode==7) Total(pFileName);
+//        else if (mode==8) lbStatus=false;
+
+         switch (mode)
+         {
+         case 1:
+             Instruction();
+             break;
+         case 2:
+             Create(pFileName);
+             break;
+         case 3:
+             AddNewStudent(pFileName,x , y, z);
+             break;
+         case 4:
+             RemoveID(pFileName,Id);
+             break;
+         case 5:
+             Max(pFileName);
+             break;
+         case 6:
+             Min(pFileName);
+             break;
+         case 7:
+             Total(pFileName);
+             break;
+         case 8:
+             lbStatus=false;
+             break;
+         default:
+             break;
+         }
+    }
+
 }
 
 void Create(char *pFileName)
@@ -274,8 +317,8 @@ void Min(char *pFileName)
 void Instruction()
 {
     printf("Usage:\n");
-    printf("1. program -create filename     : Create a new text file with a predefined format");
-    printf("2. program -add filename x y z  : Add a new student with x - Math score, y - Physics score, z - English score");
+    printf("1. program -create filename     : Create a new text file with a predefined format\n");
+    printf("2. program -add filename x y z  : Add a new student with x - Math score, y - Physics score, z - English score\n");
     printf("3. program -remove filename N   : Remove the student with ID N from the filename.\n");
     printf("4. program -max filename        : Get the ID of the students who has the highest average score and also display score.\n");
     printf("5. program -min filename        : Get the ID of the students who has the lowest average score and also display score.\n ");
@@ -290,8 +333,8 @@ int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
     char *strCmd;
 
     printf("Typing your command:\t");
-    // fgets(strCmd, 50, stdin);
-    strCmd = "program -create abc.txt";
+    fgets(strCmd, 50, stdin);
+    // strCmd = "program -create abc.txt";
 
     char splitInput[6][10];
     char *ptempFile;
@@ -410,6 +453,7 @@ int CalculateInput(char **pFileName, double *x, double *y, double *z, int *Id)
             return 8;
         } 
     }
+    else return 0;
 }
 
 bool ERR_CheckFormatFile(char *pFileName)
